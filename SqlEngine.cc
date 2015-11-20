@@ -117,6 +117,12 @@ RC SqlEngine::run(FILE* commandline)
 
   cout << cursor.pid << ", " << cursor.eid << endl;
 
+  int key;
+  RecordId rid2;
+  tree.readForward(cursor, key, rid2);
+  cout << "Key: " << key << endl;
+  cout << "pid: " << rid2.pid << " sid:" << rid2.sid << endl;
+
   tree.close();
 
   // BTreeIndex other;
