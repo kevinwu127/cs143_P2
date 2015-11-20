@@ -19,6 +19,7 @@ using namespace std;
 #define TREE_DATA_PID 0
 #define ROOT_PID 1
 #define INSERT_SPLIT -2
+#define LAST_LEAF -3
 
 
 /*
@@ -266,20 +267,19 @@ RC BTreeIndex::readForward(IndexCursor& cursor, int& key, RecordId& rid)
 {
 	RC rc;
 
-	PageId cursor_pid = cursor.pid;
-	int cursor_eid = cursor.eid;
-
 	BTLeafNode leaf;
-	if (rc = leaf.read(cursor_pid, pf) < 0) { return rc; }
-	if (rc = leaf.readEntry(cursor_eid, key, rid) < 0) { return rc; }
+	if (cursor.pid == 0) { return LAST_LEAF; }
+	if (rc = leaf.read(cursor.pid, pf) < 0) { return rc; }
+	if (rc = leaf.readEntry(cursor.eid, key, rid) < 0) { return rc; }
 
-	if (cursor_eid + 1 >= leaf.getKeyCount())
+	if (cursor.eid + 1 == leaf.getKeyCount())
 	{
 		cursor.eid = 0;
 		cursor.pid = leaf.getNextNodePtr();
 		return 0;
 	}
-	cursor.eid = cursor_eid + 1;
+	
+	cursor.eid++;
     return 0;
 }
 

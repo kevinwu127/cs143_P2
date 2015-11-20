@@ -101,27 +101,32 @@ RC SqlEngine::run(FILE* commandline)
   rid.pid = 0;
   rid.sid = 0;
 
-  // for (int i = 1; i < 12000; i++)
-  // {
-  //   tree.insert(i, rid);
-  // }
+  for (int i = 1; i < 12000; i++)
+  {
+    rid.pid = rid.sid = i;
+    tree.insert(i, rid);
+  }
 
   // tree.insert(1, rid);
   // tree.insert(2, rid);
+
+  // tree.insert(11999, rid);
 
   tree.dump();
 
   IndexCursor cursor;
 
-  tree.locate(129, cursor);
+  tree.locate(11990, cursor);
 
   cout << cursor.pid << ", " << cursor.eid << endl;
 
   int key;
   RecordId rid2;
-  tree.readForward(cursor, key, rid2);
-  cout << "Key: " << key << endl;
-  cout << "pid: " << rid2.pid << " sid:" << rid2.sid << endl;
+  while ( tree.readForward(cursor, key, rid2) != -3 )
+  {
+    cout << "Key: " << key << endl;
+    cout << "pid: " << rid2.pid << " sid:" << rid2.sid << endl;
+  }
 
   tree.close();
 
