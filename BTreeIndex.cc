@@ -117,9 +117,7 @@ RC BTreeIndex::insert(int key, const RecordId& rid)
 	int split_key;
 	PageId split_pid;
 
-	insert_R(key, rid, 1, rootPid, split_key, split_pid);
-
-    return 0;
+	return insert_R(key, rid, 1, rootPid, split_key, split_pid);
 }
 
 RC BTreeIndex::insert_R(int key, const RecordId& rid, int current_height, PageId current_pid, int& split_key, PageId& split_pid)
@@ -164,7 +162,7 @@ RC BTreeIndex::insert_R(int key, const RecordId& rid, int current_height, PageId
 		PageId child = INVALID_PID;
 		int eid;
 		if (rc = node.read(current_pid, pf) < 0) { return rc; }
-		if (rc = node.locateChildPtr(key, child, eid)) { return rc; }
+		if (rc = node.locateChildPtr(key, child, eid) < 0) { return rc; }
 
 		rc = insert_R(key, rid, current_height + 1, child, split_key, split_pid);
 
@@ -222,7 +220,38 @@ RC BTreeIndex::insert_R(int key, const RecordId& rid, int current_height, PageId
  */
 RC BTreeIndex::locate(int searchKey, IndexCursor& cursor)
 {
-    return 0;
+	if (treeHeight == 0) { return RC_NO_SUCH_RECORD; }
+
+	return locate_R(searchKey, cursor, 1, rootPid);
+}
+
+RC BTreeIndex::locate_R(int searchKey, IndexCursor& cursor, int current_height, PageId current_pid)
+{
+	RC rc;
+
+	if (current_height == treeHeight)
+	{
+		BTLeafNode leaf;
+		int eid;
+
+		if (rc = leaf.read(current_pid, pf) < 0) { return rc; }
+
+		rc = leaf.locate(searchKey, eid);
+		cursor.pid = current_pid;
+		cursor.eid = eid;
+		return rc;
+	}
+	else
+	{
+		BTNonLeafNode node;
+		int eid;
+		PageId child;
+
+		if (rc = node.read(current_pid, pf) < 0) { return rc; }
+		if (rc = node.locateChildPtr(searchKey, child, eid) < 0) { return rc; }
+
+		return locate_R(searchKey, cursor, current_height + 1, child);
+	}
 }
 
 /*
@@ -244,17 +273,18 @@ void BTreeIndex::dump()
 	cout << "Root PID: " << rootPid << endl;
 
 	BTNonLeafNode root;
+	//BTLeafNode root;
 	root.read(rootPid, pf);
 	root.dump();
 
-	BTNonLeafNode nonleaf1;
-	BTNonLeafNode nonleaf2;
+	// BTNonLeafNode nonleaf1;
+	// BTNonLeafNode nonleaf2;
 
-	nonleaf1.read(3, pf);
-	nonleaf2.read(131, pf);
+	// nonleaf1.read(3, pf);
+	// nonleaf2.read(131, pf);
 
-	nonleaf1.dump();
-	nonleaf2.dump();
+	// nonleaf1.dump();
+	// nonleaf2.dump();
 
 	BTLeafNode leaf1;
 	leaf1.read(1, pf);

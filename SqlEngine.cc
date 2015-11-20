@@ -98,10 +98,10 @@ RC SqlEngine::run(FILE* commandline)
   tree.open("test.idx", 'w');
 
   RecordId rid;
-  rid.pid = 2;
-  rid.sid = 3;
+  rid.pid = 0;
+  rid.sid = 0;
 
-  for (int i = 1; i < 12000; i++)
+  for (int i = 1; i < 350; i++)
   {
     tree.insert(i, rid);
   }
@@ -110,6 +110,12 @@ RC SqlEngine::run(FILE* commandline)
   // tree.insert(2, rid);
 
   tree.dump();
+
+  IndexCursor cursor;
+
+  tree.locate(90, cursor);
+
+  cout << cursor.pid << ", " << cursor.eid << endl;
 
   tree.close();
 
