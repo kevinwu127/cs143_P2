@@ -277,14 +277,14 @@ void BTreeIndex::dump()
 	root.read(rootPid, pf);
 	root.dump();
 
-	// BTNonLeafNode nonleaf1;
-	// BTNonLeafNode nonleaf2;
+	BTNonLeafNode nonleaf1;
+	BTNonLeafNode nonleaf2;
 
-	// nonleaf1.read(3, pf);
-	// nonleaf2.read(131, pf);
+	nonleaf1.read(3, pf);
+	nonleaf2.read(131, pf);
 
-	// nonleaf1.dump();
-	// nonleaf2.dump();
+	nonleaf1.dump();
+	nonleaf2.dump();
 
 	BTLeafNode leaf1;
 	leaf1.read(1, pf);

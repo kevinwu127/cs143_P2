@@ -101,10 +101,10 @@ RC SqlEngine::run(FILE* commandline)
   rid.pid = 0;
   rid.sid = 0;
 
-  for (int i = 1; i < 350; i++)
-  {
-    tree.insert(i, rid);
-  }
+  // for (int i = 1; i < 12000; i++)
+  // {
+  //   tree.insert(i, rid);
+  // }
 
   // tree.insert(1, rid);
   // tree.insert(2, rid);
@@ -113,7 +113,7 @@ RC SqlEngine::run(FILE* commandline)
 
   IndexCursor cursor;
 
-  tree.locate(90, cursor);
+  tree.locate(129, cursor);
 
   cout << cursor.pid << ", " << cursor.eid << endl;
 
