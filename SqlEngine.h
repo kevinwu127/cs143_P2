@@ -23,6 +23,7 @@ struct SelCond {
   char* value;  // the value to compare
 };
 
+
 /**
  * the class that takes, parses, and executes the user commands.
  */
