@@ -206,7 +206,7 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 
 
   // need_index = FALSE for following conditions:
-  if ( (attr == 2 || attr == 3) && key_constraints.empty() )
+  if ( ((attr == 2 || attr == 3) && key_constraints.empty()) || attr == 4 && key_constraints.empty() && !value_constraints.empty() )
   {
     need_index = false;
   }
